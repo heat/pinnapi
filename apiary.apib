@@ -1,80 +1,86 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://pinnapi.azurewebsites.net/v1
 
 # pinnapi
 
-Polls is a simple API allowing consumers to view polls and vote in them.
+Registro de inteções de eventos
 
-## Questions Collection [/questions]
+## Group PIN
 
-### List All Questions [GET]
+## PINS [/pins]
 
+O PIN eh o recurso que memoriza a intencao do evento
+
+### Recuperar PIN [GET /{id}]
+
+Os atributos *Code* e *Error* indicam algum comportamento estranho.
+O recurso fica no atributo *data*.
++ Parameters
+    
+    + id (number) - identificado do pin para recuperar
+    
 + Response 200 (application/json)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
+        {
+            "Code": 0
+            "Error": {}
+            "data": {
+                "codigo": "01",
+                "cliente": "Josue Cruz",
+                "valor_aposta": 123.23,
+                "palpites": [
                     {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
+                        "evento": "evento1",
+                        "odd": "oddd1",
+                    },{
+                        "evento": "evento2",
+                        "odd": "oddd3",
                     }
                 ]
             }
-        ]
+        }
+        
+### Cria novo PIN [POST]
 
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+Voce pode criar *PIN* atraves dessa acao. Necessario passar um *JSON*
+contendo os eventos das intencoes do *PIN*. Tambem pode indicar um _label_ de clientes e valores.
+No caso de erro a acao retorna em seu corpo um codigo de erro e uma mensagem de erro
 
 + Request (application/json)
 
         {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
+            "cliente": "Josue Cruz",
+            "valor_aposta": 123.23,
+            "palpites": [
+                {
+                    "evento": "evento1",
+                    "odd": "oddd1",
+                },{
+                    "evento": "evento2",
+                    "odd": "oddd3",
+                }
             ]
         }
 
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
++ Response 200 (application/json)
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "Code": 0
+                "Error": {}
+                "data": {
+                    "codigo": "01",
+                    "cliente": "Josue Cruz",
+                    "valor_aposta": 123.23,
+                    "palpites": [
+                        {
+                            "evento": "evento1",
+                            "odd": "oddd1",
+                        },{
+                            "evento": "evento2",
+                            "odd": "oddd3",
+                        }
+                    ]
+                }
             }
