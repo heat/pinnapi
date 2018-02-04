@@ -11,8 +11,8 @@ import (
 type Dinheiro float64
 
 type Palpite struct {
-	Evento string `bson:"evento" json: "evento"`
-	Odd    string `bson:"odd" json: "odd"`
+	Evento string `bson:"evento" json:"evento"`
+	Odd    string `bson:"odd" json:"odd"`
 }
 
 type Pin struct {
@@ -37,9 +37,10 @@ func (p *Pin) FindById(id string) (code int, err error) {
 	conn := mongo.Conn()
 	defer conn.Close()
 
-	c := conn.DB("pinnapi").C("pin")
 	fmt.Println("consultando")
 	fmt.Println(id)
+
+	c := conn.DB("pinnapi").C("pin")
 	err = c.FindId(id).One(p)
 
 	if err != nil {

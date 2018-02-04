@@ -16,7 +16,7 @@ type PinController struct {
 type JsonApi struct {
 	Code  int
 	Error error
-	Pin   models.Pin `json:"data"`
+	Pin   *models.Pin `json:"data"`
 }
 
 // @router / [post]
@@ -34,7 +34,7 @@ func (u *PinController) Post() {
 	j := JsonApi{
 		Code:  code,
 		Error: err,
-		Pin:   pin,
+		Pin:   &pin,
 	}
 	u.Data["json"] = &j
 	u.ServeJSON()
@@ -47,19 +47,20 @@ func (c *PinController) Get() {
 
 	pin := models.Pin{}
 
-	if code, err := pin.FindById(pincCode); err != nil {
-		beego.Error("FindUserById:", err)
+	j_ := JsonApi{}
 
-		j_ := JsonApi{
-			Code:  code,
-			Error: err,
-		}
+	if code, err := pin.FindById(pincCode); err != nil {
+
+		j_.Error = err
+		j_.Code = code
+
 		c.Data["json"] = &j_
 		c.ServeJSON()
 		return
 	}
 
-	c.Data["json"] = &pin
+	j_.Pin = &pin
+	c.Data["json"] = &j_
 
 	c.ServeJSON()
 }

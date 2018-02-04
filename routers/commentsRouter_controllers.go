@@ -58,7 +58,7 @@ func init() {
 	beego.GlobalControllerRouter["pinnapi/controllers:PinController"] = append(beego.GlobalControllerRouter["pinnapi/controllers:PinController"],
 		beego.ControllerComments{
 			Method: "Get",
-			Router: `/:objectId`,
+			Router: `/:id`,
 			AllowHTTPMethods: []string{"get"},
 			MethodParams: param.Make(),
 			Params: nil})
