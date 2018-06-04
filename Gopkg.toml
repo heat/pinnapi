@@ -44,3 +44,7 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+[metadata.heroku]
+  root-package = "pinnapi"
+  go-version = "go1.10.2"
