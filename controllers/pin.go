@@ -25,7 +25,7 @@ func (u *PinController) Post() {
 	json.Unmarshal(u.Ctx.Input.RequestBody, &pin)
 	next := models.Next()
 
-	pin.ID = strconv.Itoa(next)
+	pin.ID = strconv.Itoa(int(next))
 
 	pin.Codigo = pin.ID
 
