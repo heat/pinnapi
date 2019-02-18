@@ -2,14 +2,18 @@ package models
 
 import (
 	"fmt"
+	"gopkg.in/mgo.v2/bson"
 	"pinnapi/models/mongo"
-
-	"github.com/garyburd/redigo/redis"
 	mgo "gopkg.in/mgo.v2"
+	"strconv"
+	"sync/atomic"
 )
 
 type Dinheiro float64
 
+var (
+	id int64 = 0
+)
 type Palpite struct {
 	Evento string `bson:"evento" json:"evento"`
 	Odd    string `bson:"odd" json:"odd"`
@@ -23,14 +27,41 @@ type Pin struct {
 	Palpites []*Palpite `bson:"palpites"  json:"palpites"`
 }
 
-func Next() int {
-	c := Pool().Get()
+func init() {
 
-	defer c.Close()
+	//tenta verificar se ja existe
+	conn := mongo.Conn()
+	defer conn.Close()
 
-	n, _ := redis.Int(c.Do("INCR", "next"))
+	c := conn.DB("pinnapi").C("pin")
+	var lastPIN Pin
+	var lastID = 1;
 
-	return n
+	iter := c.Find(bson.M{}).Iter();
+
+	for iter.Next(&lastPIN) {
+		currID, _ := strconv.Atoi(lastPIN.ID);
+		if currID > lastID {
+			lastID = currID;
+		}
+	}
+
+
+	if lastID > 0 {
+		atomic.StoreInt64(&id, int64(lastID));
+	}
+}
+
+func Next() int64 {
+	atomic.AddInt64(&id, 1);
+
+
+
+	fmt.Println("consultando")
+	fmt.Println(id)
+
+	readID := atomic.LoadInt64(&id);
+	return readID;
 }
 
 func (p *Pin) FindById(id string) (code int, err error) {
