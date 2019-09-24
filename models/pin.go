@@ -35,7 +35,7 @@ func init() {
 
 	c := conn.DB("pinnapi").C("pin")
 	var lastPIN Pin
-	var lastID = 1;
+	var lastID = 10000;
 
 	iter := c.Find(bson.M{}).Iter();
 
